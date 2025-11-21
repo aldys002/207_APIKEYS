@@ -1,28 +1,58 @@
 const Admin = require("../models/Admin");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = "STATIC_SECRET_JWT_123456";
+module.exports = {
 
-exports.register = async (req, res) => {
-  const { email, password } = req.body;
+    register: async (req, res) => {
+        try {
+            const { email, password } = req.body;
 
-  const hashed = await bcrypt.hash(password, 10);
-  const admin = await Admin.create({ email, password: hashed });
+            // cek email sudah ada atau belum
+            const exist = await Admin.findOne({ where: { email } });
+            if (exist) return res.status(400).json({ error: "Email already registered" });
 
-  res.json({ message: "Admin created", admin });
-};
+            const hashed = await bcrypt.hash(password, 10);
 
-exports.login = async (req, res) => {
-  const { email, password } = req.body;
+            const admin = await Admin.create({
+                email,
+                password: hashed,
+                created_at: new Date(),
+                updated_at: new Date()
+            });
 
-  const admin = await Admin.findOne({ where: { email } });
-  if (!admin) return res.status(404).json({ error: "Admin not found" });
+            res.json({ message: "Admin registered successfully", admin });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    },
 
-  const match = await bcrypt.compare(password, admin.password);
-  if (!match) return res.status(400).json({ error: "Wrong password" });
+    login: async (req, res) => {
+        try {
+            const { email, password } = req.body;
 
-  const token = jwt.sign({ id: admin.id }, JWT_SECRET, { expiresIn: "1d" });
+            const admin = await Admin.findOne({ where: { email } });
+            if (!admin) return res.status(404).json({ error: "Admin not found" });
 
-  res.json({ message: "Login success", token });
+            const isMatch = await bcrypt.compare(password, admin.password);
+            if (!isMatch) return res.status(400).json({ error: "Invalid password" });
+
+            // token buat middleware admin
+            const token = jwt.sign(
+                { id: admin.id, email: admin.email },
+                "STATIC_SECRET_JWT_123456",
+                { expiresIn: "1d" }
+            );
+
+
+            res.json({
+                message: "Login successful",
+                token,
+                admin_id: admin.id
+            });
+
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
 };
