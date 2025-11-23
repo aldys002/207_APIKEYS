@@ -1,91 +1,58 @@
-const ApiKey = require("../models/ApiKey");
-const User = require("../models/User");
-
-// helper generate
-function generateApiKey() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < 40; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
+const { ApiKey, User } = require("../models");
+const crypto = require("crypto");
 
 module.exports = {
-    generate: async (req, res) => {
-        try {
-            const key = generateApiKey();
-            const now = new Date();
+  generateApiKey: async (req, res) => {
+    try {
+      const newKey = crypto.randomBytes(32).toString("hex");
 
-            // out_date = 1 bulan
-            const outDate = new Date();
-            outDate.setMonth(outDate.getMonth() + 1);
+      const apiKey = await ApiKey.create({
+        key: newKey,
+        user_id: null,
+        status: false,
+        out_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        created_at: new Date(),
+        updated_at: new Date()
+      });
 
-            const newKey = await ApiKey.create({
-                key,
-                status: false,
-                user_id: null,
-                created_at: now,
-                updated_at: now,
-                out_date: outDate
-            });
-
-            res.json({
-                message: "API Key generated",
-                apikey: newKey
-            });
-
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
-    },
-
-    getAll: async (req, res) => {
-        try {
-            const keys = await ApiKey.findAll();
-            res.json(keys);
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
-    },
-
-    assignToUser: async (req, res) => {
-        try {
-            const { apiKeyId, userId } = req.body;
-
-            const apiKey = await ApiKey.findByPk(apiKeyId);
-            if (!apiKey) return res.status(404).json({ error: "API key not found" });
-
-            const user = await User.findByPk(userId);
-            if (!user) return res.status(404).json({ error: "User not found" });
-
-            await apiKey.update({
-                user_id: userId,
-                status: true,
-                updated_at: new Date()
-            });
-
-            res.json({ message: "API Key assigned to user", apiKey });
-
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
-    },
-
-    delete: async (req, res) => {
-        try {
-            const { id } = req.params;
-
-            const deleted = await ApiKey.destroy({
-                where: { id }
-            });
-
-            if (!deleted) return res.status(404).json({ error: "API key not found" });
-
-            res.json({ message: "API key deleted" });
-
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
+      res.json({ apikey: apiKey.key });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
+  },
+
+  getAllApiKeys: async (req, res) => {
+  try {
+    const keys = await ApiKey.findAll({
+      include: [{
+        model: User,
+        attributes: ["id", "firstname", "lastname", "email"]
+      }]
+    });
+
+    // FIX → kirim data plain JSON supaya frontend bisa baca
+    const jsonKeys = keys.map(k => k.toJSON());
+    res.json(jsonKeys);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+},
+
+
+  deleteApiKey: async (req, res) => {
+    try {
+      const deleted = await ApiKey.destroy({
+        where: { id: req.params.id }
+      });
+
+      if (!deleted) {
+        return res.status(404).json({ error: "API Key not found" });
+      }
+
+      res.json({ message: "API key deleted" });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
 };
