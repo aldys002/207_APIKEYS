@@ -1,30 +1,121 @@
-body {
-    background: #e3f2fd;
-    font-family: Poppins, sans-serif;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
-.dashboard-container {
-    width: 90%;
-    margin: auto;
+/* Background soft blue */
+body {
+    background: linear-gradient(135deg, #d9eafd, #f4faff);
+    color: #333;
     padding: 20px;
 }
 
+/* Title */
+h1, h2 {
+    color: #1f6feb;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+/* Soft Blue Modern Button */
+button {
+    cursor: pointer;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #1f6feb;
+    color: #fff;
+    margin: 8px 0;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background-color: #1557c0;
+    transform: translateY(-2px);
+}
+
+/* Input */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #bfd6f8;
+    background: #ffffff;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+input:focus {
+    border-color: #1f6feb;
+}
+
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 40px;
+    margin-top: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 table th, table td {
-    border: 1px solid #90caf9;
-    padding: 10px;
+    padding: 12px;
+    border-bottom: 1px solid #e5eaf0;
+    text-align: left;
 }
 
-.logout-btn {
-    background: #d32f2f;
+table th {
+    background-color: #1f6feb;
     color: white;
-    padding: 8px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f4f8ff;
+}
+
+table tr:hover {
+    background-color: #e5f1ff;
+}
+
+/* Message */
+.error-msg { 
+    color: #e63946; 
+    margin-top: 10px;  
+    text-align: center;
+}
+
+.success-msg { 
+    color: #2a9d8f; 
+    margin-top: 10px; 
+    text-align: center;
+}
+
+/* Card Containers (Login, Register, Dashboard Form Box) */
+.user-container, 
+.login-container, 
+.register-container {
+    width: 420px;
+    margin: 60px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    animation: fadeIn 0.4s ease;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

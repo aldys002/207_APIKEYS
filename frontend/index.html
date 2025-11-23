@@ -1,46 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate API Key</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>User Page & API Key</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #eef3fb;
+            margin: 0;
+            height: 100vh;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 430px;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3e50;
+        }
+
+        h2 {
+            margin-top: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #4b8bf4;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 16px 0;
+            border: 1px solid #cbd7f0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #f8faff;
+            transition: 0.25s;
+        }
+
+        input:focus {
+            border-color: #4b8bf4;
+            box-shadow: 0 0 0 3px rgba(75, 139, 244, 0.25);
+            background: #ffffff;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4b8bf4;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: 0.25s;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #3a74d9;
+        }
+
+        /* Admin buttons */
+        .admin-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .admin-buttons button {
+            width: 48%;
+            background: #2a2f36;
+        }
+
+        .admin-buttons button:hover {
+            background: #1d1f24;
+        }
+
+        #success {
+            color: #0ea84b;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        #error {
+            color: #d62828;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #243447;
+        }
+    </style>
 </head>
 
 <body>
 
     <div class="container">
-        <h2>Generate API Key</h2>
 
-        <div class="form-group">
-            <label>First Name</label>
-            <input type="text" id="firstname" placeholder="Enter first name">
+        <h1>User Page & API Key</h1>
+
+        <!-- Admin Login/Register -->
+        <div class="admin-buttons">
+            <button onclick="window.location.href='admin/login_admin.html'">Admin Login</button>
+            <button onclick="window.location.href='admin/register_admin.html'">Admin Register</button>
         </div>
 
-        <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" id="lastname" placeholder="Enter last name">
-        </div>
+        <h2>Create User & Generate API Key</h2>
 
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="email" placeholder="Enter email">
-        </div>
+        <form id="userForm">
 
-        <div class="form-group">
-            <label>Your API Key</label>
-            <input type="text" id="apikey" readonly placeholder="Click Generate">
-        </div>
+            <input type="text" id="firstname" placeholder="Firstname" required>
+            <input type="text" id="lastname" placeholder="Lastname" required>
+            <input type="email" id="email" placeholder="Email" required>
 
-        <button class="btn-generate" onclick="generateKey()">Generate API Key</button>
-        <button class="btn-save" onclick="saveUser()">Save</button>
+            <label>API Key:</label>
+            <input type="text" id="apiKeyField" readonly placeholder="Generate API Key dulu">
 
-        <div class="admin-links">
-            <a href="admin/login_admin.html">Admin Login</a> |
-            <a href="admin/register_admin.html">Admin Register</a>
-        </div>
+            <button type="button" id="generateApiKeyBtn">Generate API Key</button>
+            <button type="submit">Save</button>
+
+        </form>
+
+        <p id="success"></p>
+        <p id="error"></p>
     </div>
 
-    <script src="assets/js/user.js"></script>
+    <script src="js/user.js"></script>
+
 </body>
+
 </html>
